@@ -13,7 +13,8 @@ export class PrismaPetsRepository implements PetsRepository {
     return pet
   }
 
-  async create(data: Prisma.PetCreateInput): Promise<Pet> {
+  async create(data: Prisma.PetUncheckedCreateInput): Promise<Pet> {
+    // console.log(data)
     const pet = await prisma.pet.create({
       data,
     })

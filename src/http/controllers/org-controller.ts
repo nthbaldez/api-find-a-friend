@@ -3,7 +3,7 @@ import { OrgAlreadyExistsError } from '@/use-cases/orgs/errors/org-already-exist
 import { makeAuthenticateUseCase } from '@/use-cases/orgs/factories/make-authenticate-use-case'
 import { makeCreateOrgUseCase } from '@/use-cases/orgs/factories/make-create-org-use-case'
 import { JwtUseCase } from '@/use-cases/orgs/jwt-use-case'
-import { makeCreatePetUseCase } from '@/use-cases/pets/factories/make-create-pet-use-case'
+
 import { Request, Response } from 'express'
 import z from 'zod'
 
@@ -56,7 +56,6 @@ export class OrgController {
       }
 
       if (error instanceof z.ZodError) {
-        console.log(error.flatten().fieldErrors)
         return res.status(400).json({
           message: 'Erro na validação dos dados de entrada.',
           errors: error.flatten().fieldErrors,
@@ -122,46 +121,5 @@ export class OrgController {
     return res.status(200).json({
       message: 'Logout realizado com sucesso.',
     })
-  }
-
-  public static async createPet(req: Request, res: Response) {
-    const createPetBodySchema = z.object({
-      name: z.string(),
-      description: z.string(),
-      age: z.string(),
-      size: z.string(),
-      energy_level: z.string(),
-      independency_level: z.string(),
-      environment: z.string(),
-      requirements: z.string(),
-      orgId: z.string().uuid(),
-    })
-
-    const {
-      name,
-      description,
-      age,
-      size,
-      energy_level,
-      environment,
-      independency_level,
-      orgId,
-    } = createPetBodySchema.parse(req.body)
-
-    try {
-      const createPetsUseCase = makeCreatePetUseCase()
-
-      await createPetsUseCase.execute({
-        name,
-        description,
-        age,
-        size,
-        energy_level,
-        environment,
-        independency_level,
-        orgId,
-      })
-    } catch (error) {}
-    return res.status(200).send()
   }
 }
